@@ -14,7 +14,7 @@ client = OpenAI(
 messages = []
 messages.append({
     "role": "system",
-    "content": "Act like a very humble agent and respond always under 10 words."
+    "content": "You are a helpful and humble AI assistant. When a query requires multiple steps or tools, call the tools sequentially step-by-step before providing your concise final answer."
 })
 
 while True:
@@ -52,11 +52,14 @@ while True:
                     tool_call.function.arguments or "{}"
                 )
 
+                print(f"  [Tool Chain Step {step + 1}] Calling {func_name}({tool_call.function.arguments.strip()})...")
                 fn = FUNCTION_NAME_TO_FUNCTION_MAP[func_name]
                 result = fn(**func_args)
+                print(f"  [Tool Result] {result}")
 
             except Exception as e:
                 result = f"Error while running {func_name}: {e}"
+                print(f"  [Tool Error] {result}")
 
             messages.append({
                 "role": "tool",
